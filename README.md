@@ -38,7 +38,7 @@ This project demonstrates fundamental front-end development skills using **HTML,
   https://dems1234tech.github.io/dems1234tech-CodingCamp-19Jan26-dimasrifaldi/
   
 - **GitHub Repository:**  
-  https://github.com/dems1234tech/CodingCamp-19Jan26-dimasrifaldi
+  https://dems1234tech.github.io/CodingCamp-19Jan26-dimasrifaldi/
 
 ---
 
