@@ -7,14 +7,27 @@ const warning = document.getElementById("warning");
 const filters = document.querySelectorAll(".filters button");
 const themeToggle = document.getElementById("themeToggle");
 
-
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
-let currentFilter = "all";
+let filter = "all";
 
-form.addEventListener("submit", function (e) {
+/* THEME */
+if (localStorage.getItem("theme") === "light") {
+  document.body.classList.add("light");
+  themeToggle.textContent = "☀️ Light";
+}
+
+themeToggle.onclick = () => {
+  document.body.classList.toggle("light");
+  const light = document.body.classList.contains("light");
+  themeToggle.textContent = light ? "☀️ Light" : "🌙 Dark";
+  localStorage.setItem("theme", light ? "light" : "dark");
+};
+
+/* FORM */
+form.onsubmit = e => {
   e.preventDefault();
 
-  if (input.value === "" || dateInput.value === "") {
+  if (!input.value || !dateInput.value) {
     warning.style.display = "block";
     return;
   }
@@ -30,87 +43,84 @@ form.addEventListener("submit", function (e) {
 
   input.value = "";
   dateInput.value = "";
-  saveAndRender();
-});
+  save();
+};
 
-filters.forEach(button => {
-  button.addEventListener("click", () => {
-    filters.forEach(btn => btn.classList.remove("active"));
-    button.classList.add("active");
-    currentFilter = button.dataset.filter;
+/* FILTER */
+filters.forEach(btn => {
+  btn.onclick = () => {
+    filters.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filter = btn.dataset.filter;
     render();
-  });
+  };
 });
 
 function render() {
   list.innerHTML = "";
 
-  let filteredTodos = todos.filter(todo => {
-    if (currentFilter === "active") return !todo.completed;
-    if (currentFilter === "completed") return todo.completed;
+  const filtered = todos.filter(t => {
+    if (filter === "active") return !t.completed;
+    if (filter === "completed") return t.completed;
     return true;
   });
 
-  empty.style.display = filteredTodos.length === 0 ? "block" : "none";
+  empty.style.display = filtered.length ? "none" : "block";
 
-  themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("light");
-
-  if (document.body.classList.contains("light")) {
-    themeToggle.textContent = "☀️ Light";
-    localStorage.setItem("theme", "light");
-  } else {
-    themeToggle.textContent = "🌙 Dark";
-    localStorage.setItem("theme", "dark");
-  }
-});
-
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "light") {
-  document.body.classList.add("light");
-  themeToggle.textContent = "☀️ Light";
-}
-
-  filteredTodos.forEach(todo => {
+  filtered.forEach(todo => {
     const li = document.createElement("li");
     if (todo.completed) li.classList.add("completed");
 
     li.innerHTML = `
       <div>
-        <strong>${todo.text}</strong><br>
+        <span class="task-text">${todo.text}</span><br>
         <small>${todo.date}</small>
       </div>
       <div class="actions">
-        <button class="check">✔</button>
-        <button class="delete">✖</button>
+        <button>✔</button>
+        <button>✖</button>
       </div>
     `;
 
-    li.querySelector(".check").onclick = () => toggleTodo(todo.id);
-    li.querySelector(".delete").onclick = () => deleteTodo(todo.id);
+    li.querySelector(".actions button:first-child").onclick = () => toggle(todo.id);
+    li.querySelector(".actions button:last-child").onclick = () => removeTodo(todo.id);
+
+    li.querySelector(".task-text").ondblclick = e => editTodo(e.target, todo);
 
     list.appendChild(li);
   });
 }
 
-function toggleTodo(id) {
-  todos = todos.map(todo =>
-    todo.id === id ? { ...todo, completed: !todo.completed } : todo
-  );
-  saveAndRender();
+function editTodo(el, todo) {
+  const inputEdit = document.createElement("input");
+  inputEdit.value = todo.text;
+  inputEdit.className = "edit-input";
+  el.replaceWith(inputEdit);
+  inputEdit.focus();
+
+  inputEdit.onblur = saveEdit;
+  inputEdit.onkeydown = e => e.key === "Enter" && saveEdit();
+
+  function saveEdit() {
+    todo.text = inputEdit.value.trim() || todo.text;
+    save();
+  }
 }
 
-function deleteTodo(id) {
-  todos = todos.filter(todo => todo.id !== id);
-  saveAndRender();
+function toggle(id) {
+  todos = todos.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+  save();
 }
 
-function saveAndRender() {
+function removeTodo(id) {
+  todos = todos.filter(t => t.id !== id);
+  save();
+}
+
+function save() {
   localStorage.setItem("todos", JSON.stringify(todos));
   render();
 }
 
 render();
-
-
 
