@@ -208,3 +208,11 @@ body.light .filters .active {
   color: white;
 }
 
+.watermark {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 11px;
+  opacity: 0.4;
+  letter-spacing: 2px;
+}
+
