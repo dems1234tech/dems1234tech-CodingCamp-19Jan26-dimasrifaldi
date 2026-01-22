@@ -45,6 +45,25 @@ header p {
   opacity: 0.7;
 }
 
+header h1 {
+  background: linear-gradient(
+    270deg,
+    #6366f1,
+    #22d3ee,
+    #a855f7
+  );
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientMove 6s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .theme-toggle {
   margin-top: 10px;
   padding: 6px 14px;
@@ -215,4 +234,14 @@ header p {
   to {
     text-shadow: 0 0 12px rgba(99,102,241,0.8);
   }
+}
+
+.app {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
 }
