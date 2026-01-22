@@ -5,6 +5,8 @@ const list = document.getElementById("todoList");
 const empty = document.getElementById("emptyState");
 const warning = document.getElementById("warning");
 const filters = document.querySelectorAll(".filters button");
+const themeToggle = document.getElementById("themeToggle");
+
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
 let currentFilter = "all";
@@ -91,3 +93,22 @@ function saveAndRender() {
 }
 
 render();
+
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light");
+
+  if (document.body.classList.contains("light")) {
+    themeToggle.textContent = "☀️ Light";
+    localStorage.setItem("theme", "light");
+  } else {
+    themeToggle.textContent = "🌙 Dark";
+    localStorage.setItem("theme", "dark");
+  }
+});
+
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  themeToggle.textContent = "☀️ Light";
+}
+
