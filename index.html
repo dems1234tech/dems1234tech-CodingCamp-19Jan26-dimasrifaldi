@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NeoTask</title>
+  <title>To-Do List</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
   <main class="app">
     <header>
-      <h1>NeoTask</h1>
-      <p>Plan. Focus. Execute.</p>
+      <h1>To-Do List</h1>
+      <p>Plan your day efficiently</p>
     </header>
 
     <form id="todoForm" class="input-area">
-      <input type="text" id="todoInput" placeholder="Create a new task…" />
-      <input type="date" id="dateInput" />
+      <input
+        type="text"
+        id="todoInput"
+        placeholder="What do you want to do?"
+      />
+      <input
+        type="date"
+        id="dateInput"
+      />
       <button type="submit">➕</button>
     </form>
 
     <p id="warning" class="warning">⚠️ Please fill in all fields</p>
-
 
     <section class="filters">
       <button data-filter="all" class="active">All</button>
@@ -32,14 +38,10 @@
     <ul id="todoList" class="task-list"></ul>
 
     <div id="emptyState" class="empty">
-      ✨ No tasks yet. Create your first one.
+      ✨ No tasks yet. Add your first task.
     </div>
   </main>
 
   <script src="js/script.js"></script>
 </body>
 </html>
-
-
-
-
