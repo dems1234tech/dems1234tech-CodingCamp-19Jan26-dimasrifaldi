@@ -124,3 +124,30 @@ function save() {
 
 render();
 
+const clockEl = document.getElementById("clock");
+const dateEl = document.getElementById("date");
+
+function updateTime() {
+  const now = new Date();
+
+  const time = now.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit"
+  });
+
+  const date = now.toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  });
+
+  clockEl.textContent = time;
+  dateEl.textContent = date;
+}
+
+setInterval(updateTime, 1000);
+updateTime();
+
+
