@@ -1,84 +1,103 @@
 const form = document.getElementById("todoForm");
-const todoInput = document.getElementById("todoInput");
+const taskInput = document.getElementById("todoInput");
 const dateInput = document.getElementById("dateInput");
 const todoList = document.getElementById("todoList");
 const filterButtons = document.querySelectorAll(".filter button");
+const counter = document.getElementById("counter");
+const clearAllBtn = document.getElementById("clearAll");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
+let filter = "all";
 
-// Render on load
-renderTodos(todos);
-
-// Add Todo
-form.addEventListener("submit", function (e) {
+form.addEventListener("submit", (e) => {
   e.preventDefault();
-
-  if (!todoInput.value || !dateInput.value) {
-    alert("Please fill all fields!");
+  if (!taskInput.value || !dateInput.value) {
+    alert("Please fill task and date");
     return;
   }
 
-  const todo = {
+  todos.push({
     id: Date.now(),
-    text: todoInput.value,
+    text: taskInput.value,
     date: dateInput.value,
     completed: false,
-  };
+  });
 
-  todos.push(todo);
-  saveAndRender();
-
-  todoInput.value = "";
+  taskInput.value = "";
   dateInput.value = "";
+  saveAndRender();
 });
 
-// Render Function
-function renderTodos(data) {
+filterButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    filterButtons.forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    filter = btn.dataset.filter;
+    renderTodos();
+  });
+});
+
+clearAllBtn.addEventListener("click", () => {
+  if (confirm("Delete all tasks?")) {
+    todos = [];
+    saveAndRender();
+  }
+});
+
+function renderTodos() {
   todoList.innerHTML = "";
 
-  data.forEach((todo) => {
+  let filtered = todos.filter(todo => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    todoList.innerHTML = "<p>No task found</p>";
+  }
+
+  filtered.forEach(todo => {
     const li = document.createElement("li");
     li.className = todo.completed ? "completed" : "";
 
     li.innerHTML = `
-      <span>${todo.text} - ${todo.date}</span>
+      <div class="task-info">
+        <strong>${todo.text}</strong>
+        <small>${todo.date}</small>
+      </div>
       <div class="actions">
-        <button onclick="toggleTodo(${todo.id})">✓</button>
-        <button class="delete" onclick="deleteTodo(${todo.id})">X</button>
+        <button onclick="toggleTodo(${todo.id})">✔</button>
+        <button onclick="deleteTodo(${todo.id})">✖</button>
       </div>
     `;
-
     todoList.appendChild(li);
   });
+
+  updateCounter();
 }
 
-// Save + Render
-function saveAndRender() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-  renderTodos(todos);
-}
-
-// Delete
-function deleteTodo(id) {
-  todos = todos.filter((todo) => todo.id !== id);
-  saveAndRender();
-}
-
-// Toggle Complete
 function toggleTodo(id) {
-  todos = todos.map((todo) =>
+  todos = todos.map(todo =>
     todo.id === id ? { ...todo, completed: !todo.completed } : todo
   );
   saveAndRender();
 }
 
-// Filter
-filterButtons.forEach((btn) => {
-  btn.addEventListener("click", () => {
-    const type = btn.dataset.filter;
+function deleteTodo(id) {
+  todos = todos.filter(todo => todo.id !== id);
+  saveAndRender();
+}
 
-    if (type === "all") renderTodos(todos);
-    if (type === "active") renderTodos(todos.filter((t) => !t.completed));
-    if (type === "completed") renderTodos(todos.filter((t) => t.completed));
-  });
-});
+function updateCounter() {
+  const active = todos.filter(t => !t.completed).length;
+  const completed = todos.filter(t => t.completed).length;
+  counter.textContent = `Total: ${todos.length} | Active: ${active} | Completed: ${completed}`;
+}
+
+function saveAndRender() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+  renderTodos();
+}
+
+renderTodos();
