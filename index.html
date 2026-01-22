@@ -1,31 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colorful To-Do</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
 <body>
-  <div class="container">
-    <h1>To-Do List</h1>
 
-    <form id="todoForm" class="top-form">
-      <input
-        type="text"
-        id="todoInput"
-        placeholder="Add a task..."
-        aria-label="Task"
-      />
-      <input type="date" id="dateInput" aria-label="Due date" />
-      <button type="submit">+</button>
+  <div class="app">
+    <h1>🌈 My To-Do</h1>
+
+    <!-- ADD TASK -->
+    <form id="todoForm" class="add-form">
+      <input type="text" id="taskInput" placeholder="What to do?" />
+      <input type="date" id="dateInput" />
+      <select id="priorityInput">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+      <button>Add</button>
     </form>
 
-    <div class="toolbar">
-      <div class="filter">
-        <button data-filter="all" class="active">All</button>
-        <button data-filter="active">Active</button>
-        <button data-filter="completed">Completed</button>
-      </div>
-      <button id="clearAll" class="danger">Delete All</button>
+    <!-- FILTER -->
+    <div class="filter">
+      <button data-filter="all" class="active">All</button>
+      <button data-filter="active">Active</button>
+      <button data-filter="completed">Completed</button>
     </div>
 
-    <div class="counter" id="counter"></div>
+    <!-- PROGRESS -->
+    <div class="progress">
+      <div id="progressBar"></div>
+    </div>
 
+    <!-- LIST -->
     <ul id="todoList"></ul>
   </div>
 
   <script src="js/script.js"></script>
 </body>
+</html>
