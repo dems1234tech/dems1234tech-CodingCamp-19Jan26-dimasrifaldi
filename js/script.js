@@ -3,14 +3,21 @@ const input = document.getElementById("todoInput");
 const dateInput = document.getElementById("dateInput");
 const list = document.getElementById("todoList");
 const empty = document.getElementById("emptyState");
+const warning = document.getElementById("warning");
 const filters = document.querySelectorAll(".filters button");
 
 let todos = JSON.parse(localStorage.getItem("todos")) || [];
-let filter = "all";
+let currentFilter = "all";
 
-form.addEventListener("submit", e => {
+form.addEventListener("submit", function (e) {
   e.preventDefault();
-  if (!input.value || !dateInput.value) return;
+
+  if (input.value === "" || dateInput.value === "") {
+    warning.style.display = "block";
+    return;
+  }
+
+  warning.style.display = "none";
 
   todos.push({
     id: Date.now(),
@@ -21,30 +28,30 @@ form.addEventListener("submit", e => {
 
   input.value = "";
   dateInput.value = "";
-  save();
+  saveAndRender();
 });
 
-filters.forEach(btn => {
-  btn.onclick = () => {
-    filters.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    filter = btn.dataset.filter;
+filters.forEach(button => {
+  button.addEventListener("click", () => {
+    filters.forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+    currentFilter = button.dataset.filter;
     render();
-  };
+  });
 });
 
 function render() {
   list.innerHTML = "";
 
-  const filtered = todos.filter(t => {
-    if (filter === "active") return !t.completed;
-    if (filter === "completed") return t.completed;
+  let filteredTodos = todos.filter(todo => {
+    if (currentFilter === "active") return !todo.completed;
+    if (currentFilter === "completed") return todo.completed;
     return true;
   });
 
-  empty.style.display = filtered.length ? "none" : "block";
+  empty.style.display = filteredTodos.length === 0 ? "block" : "none";
 
-  filtered.forEach(todo => {
+  filteredTodos.forEach(todo => {
     const li = document.createElement("li");
     if (todo.completed) li.classList.add("completed");
 
@@ -54,27 +61,31 @@ function render() {
         <small>${todo.date}</small>
       </div>
       <div class="actions">
-        <button onclick="toggle(${todo.id})">✔</button>
-        <button onclick="removeTodo(${todo.id})">✖</button>
+        <button class="check">✔</button>
+        <button class="delete">✖</button>
       </div>
     `;
+
+    li.querySelector(".check").onclick = () => toggleTodo(todo.id);
+    li.querySelector(".delete").onclick = () => deleteTodo(todo.id);
+
     list.appendChild(li);
   });
 }
 
-function toggle(id) {
-  todos = todos.map(t =>
-    t.id === id ? { ...t, completed: !t.completed } : t
+function toggleTodo(id) {
+  todos = todos.map(todo =>
+    todo.id === id ? { ...todo, completed: !todo.completed } : todo
   );
-  save();
+  saveAndRender();
 }
 
-function removeTodo(id) {
-  todos = todos.filter(t => t.id !== id);
-  save();
+function deleteTodo(id) {
+  todos = todos.filter(todo => todo.id !== id);
+  saveAndRender();
 }
 
-function save() {
+function saveAndRender() {
   localStorage.setItem("todos", JSON.stringify(todos));
   render();
 }
