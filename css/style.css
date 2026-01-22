@@ -172,3 +172,39 @@ header p {
   from { transform: translateY(10px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* THEME TOGGLE BUTTON */
+.theme-toggle {
+  margin-top: 10px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+/* LIGHT MODE */
+body.light {
+  background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+  color: #0f172a;
+}
+
+body.light .app {
+  background: white;
+  color: #0f172a;
+}
+
+body.light input,
+body.light .filters button,
+body.light .task-list li {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+body.light .filters .active {
+  background: #6366f1;
+  color: white;
+}
+
